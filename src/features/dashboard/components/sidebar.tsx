@@ -108,10 +108,10 @@ export default function Sidebar({ currentUser, currentOrganization, currentPath,
         <div className="flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-sidebar-primary rounded-lg flex items-center justify-center mr-3">
-                <svg className="w-5 h-5 text-sidebar-primary-foreground" fill="currentColor" viewBox="0 0 24 24">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3 shadow-lg">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" fill="none"/>
                 </svg>
               </div>
               <h1 className="text-lg font-semibold text-sidebar-foreground">Pace</h1>

@@ -1,5 +1,7 @@
 import { useState, useCallback } from "react";
 import { userService } from "@/lib/api-client";
+import type { StandardResponseOfstring } from "@/api";
+import type { StandardResponseOfCapitalizedString } from "@/lib/utils";
 
 interface EmailConfirmationState {
 	isLoading: boolean;
@@ -49,7 +51,7 @@ export function useEmailConfirmation() {
 			const response = await userService.confirmEmailAlt({
 				userId,
 				token,
-			});
+			}) as StandardResponseOfCapitalizedString;
 
 			console.log("Email confirmation response:", response);
 
@@ -57,7 +59,7 @@ export function useEmailConfirmation() {
 				...prev,
 				isLoading: false,
 				isSuccess: true,
-				message: response || "Email confirmed successfully! You can now log in.",
+				message: response.Data || "Email confirmed successfully! You can now log in.",
 			}));
 
 		} catch (err: any) {

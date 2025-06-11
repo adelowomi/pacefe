@@ -7,15 +7,13 @@ A modern React application built with Vite, TypeScript, and TanStack Router for 
 ### Prerequisites
 
 - Node.js (v18 or higher)
-- npm, yarn, or pnpm
+- pnpm
 
 ### Installation
 
 1. Clone the repository
 2. Install dependencies:
    ```bash
-   npm install
-   # or
    pnpm install
    ```
 
@@ -35,8 +33,6 @@ A modern React application built with Vite, TypeScript, and TanStack Router for 
 
 Start the development server:
 ```bash
-npm run dev
-# or
 pnpm dev
 ```
 
@@ -45,8 +41,6 @@ The application will be available at `http://localhost:3000`
 ### Building for Production
 
 ```bash
-npm run build
-# or
 pnpm build
 ```
 
@@ -54,13 +48,13 @@ pnpm build
 
 ```bash
 # Run tests
-npm test
+pnpm test
 
 # Run tests in watch mode
-npm run test:watch
+pnpm test:watch
 
 # Run tests with coverage
-npm run coverage
+pnpm coverage
 ```
 
 ## 🔧 Environment Variables
@@ -84,7 +78,7 @@ npm run coverage
 
 2. **Build the Application**:
    ```bash
-   npm run build
+   pnpm build
    ```
 
 3. **Deploy the `dist/` folder** to your hosting platform (Vercel, Netlify, AWS S3, etc.)
@@ -98,12 +92,12 @@ npm run coverage
 
 #### Netlify
 1. Connect your repository to Netlify
-2. Set build command: `npm run build`
+2. Set build command: `pnpm build`
 3. Set publish directory: `dist`
 4. Set environment variables in Netlify dashboard
 
 #### AWS S3 + CloudFront
-1. Build the application: `npm run build`
+1. Build the application: `pnpm build`
 2. Upload `dist/` contents to S3 bucket
 3. Configure CloudFront distribution
 4. Set up proper routing for SPA

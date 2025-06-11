@@ -43,15 +43,15 @@ Custom API request handler with enhanced features:
 ### Generate API Types
 ```bash
 # Using the new custom script
-npm run codegen
+pnpm codegen
 
 # Alternative using config file directly
-npm run codegen:config
+pnpm codegen:config
 ```
 
 ### Scripts Available
-- `npm run codegen` - Run the TypeScript generation script
-- `npm run codegen:config` - Use openapi CLI with config file
+- `pnpm codegen` - Run the TypeScript generation script
+- `pnpm codegen:config` - Use openapi CLI with config file
 
 ## Configuration Customization
 

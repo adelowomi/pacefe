@@ -9,7 +9,8 @@ import {
   ArrowUpDown,
   Calendar,
   Moon,
-  Sun
+  Sun,
+  User
 } from 'lucide-react';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
@@ -76,6 +77,13 @@ export default function Sidebar({ currentUser, currentOrganization, currentPath,
       icon: Building2,
       href: '/organization',
       active: currentPath === '/organization',
+    },
+    {
+      id: 'users',
+      label: 'Profile',
+      icon: User,
+      href: '/users',
+      active: currentPath === '/users',
     },
   ];
 

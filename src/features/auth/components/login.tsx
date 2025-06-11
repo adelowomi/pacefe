@@ -1,6 +1,7 @@
 import { Eye, EyeOff, Mail } from "lucide-react";
 import { useLogin } from "../hooks/useLogin";
 import { DarkModeToggle } from "@/components/ui/dark-mode-toggle";
+import ForgotPasswordModal from "@/features/users/components/forgot-password-modal";
 
 export default function Login() {
 	const {
@@ -8,11 +9,13 @@ export default function Login() {
 		showPassword,
 		isLoading,
 		error,
+		showForgotPassword,
 		handleInputChange,
 		togglePasswordVisibility,
 		handleSubmit,
 		handleSignUpClick,
 		handleForgotPasswordClick,
+		handleCloseForgotPassword,
 	} = useLogin();
 
 	return (
@@ -185,6 +188,12 @@ export default function Login() {
 					</p>
 				</div>
 			</div>
+
+			{/* Forgot Password Modal */}
+			<ForgotPasswordModal
+				isOpen={showForgotPassword}
+				onClose={handleCloseForgotPassword}
+			/>
 		</div>
 	);
 }

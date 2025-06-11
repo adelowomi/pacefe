@@ -1,9 +1,5 @@
-// import Login from "@/features/auth/components/login";
+import UserProfile from './user-profile';
 
 export default function Users() {
-	return (
-		<div>
-			Users route page or list
-		</div>
-	);
+	return <UserProfile />;
 }

@@ -28,6 +28,7 @@ export default function EmailConfirmation() {
 		const { userId, token } = search;
 		
 		if (userId && token) {
+			// Token is already properly decoded at the route level
 			confirmEmail(userId, token);
 		}
 	}, [search, confirmEmail]);

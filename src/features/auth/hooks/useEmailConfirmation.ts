@@ -41,6 +41,9 @@ export function useEmailConfirmation() {
 
 		try {
 			console.log("Confirming email with:", { userId, token });
+			console.log("Token length:", token.length);
+			console.log("Token contains spaces:", token.includes(' '));
+			console.log("Token contains plus signs:", token.includes('+'));
 
 			// Call the API to confirm email
 			const response = await userService.confirmEmailAlt({

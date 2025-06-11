@@ -35,7 +35,7 @@ export default function EventDetailsModal({
   };
 
   const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
+    new Date(dateString);
     return {
       date: formatDate(dateString),
       time: formatTime(dateString),

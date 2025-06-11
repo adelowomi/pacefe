@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { X, Clock, MapPin, User, Calendar, Plus } from 'lucide-react';
 import type { CalendarEventView } from '@/api/models/CalendarEventView';
 import { getEventColor } from '@/lib/event-colors';

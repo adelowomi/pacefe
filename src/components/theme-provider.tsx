@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React from 'react';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
 interface ThemeProviderProps {
@@ -6,7 +6,7 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const { isDarkMode } = useDarkMode();
+  useDarkMode();
 
   // This component just ensures the dark mode hook is initialized
   // The actual theme application happens in the hook

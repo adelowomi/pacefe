@@ -1,0 +1,44 @@
+import type { QueryClient } from "@tanstack/react-query";
+
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+
+import appCss from "@/styles.css?inline";
+
+import TanStackQueryLayout from "../integrations/tanstack-query/layout.tsx";
+import { ThemeProvider } from "@/components/theme-provider";
+
+type MyRouterContext = {
+	queryClient: QueryClient;
+};
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
+	head: () => ({
+		meta: [
+			{
+				charSet: "utf-8",
+			},
+			{
+				name: "viewport",
+				content: "width=device-width, initial-scale=1",
+			},
+			{
+				title: "TanStack Start Starter",
+			},
+		],
+		links: [
+			{
+				rel: "stylesheet",
+				href: appCss,
+			},
+		],
+	}),
+	component: () => (
+		<ThemeProvider>
+			<Outlet />
+			<TanStackRouterDevtools />
+
+			<TanStackQueryLayout />
+		</ThemeProvider>
+	),
+});

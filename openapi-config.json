@@ -1,0 +1,16 @@
+{
+  "input": "https://pace-api-c8gqe6g7ckbfcjhc.canadacentral-01.azurewebsites.net/openapi/v1.json",
+  "output": "./src/api",
+  "useOptions": true,
+  "useUnionTypes": true,
+  "exportCore": true,
+  "exportServices": true,
+  "exportModels": true,
+  "exportSchemas": false,
+  "indent": "2",
+  "postfixServices": "Service",
+  "postfixModels": "",
+  "write": true,
+  "clientName": "ApiClient",
+  "httpClient": "axios"
+}

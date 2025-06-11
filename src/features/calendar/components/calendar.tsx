@@ -197,9 +197,9 @@ export default function Calendar({ organizationId, calendarId, currentUserId }: 
   }
 
   return (
-    <div className="bg-card rounded-lg shadow border border-border">
+    <div className="bg-card rounded-lg shadow border border-border animate-fade-in-up">
       {/* Header */}
-      <div className="p-6 border-b border-border">
+      <div className="p-6 border-b border-border animate-slide-in-down">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-card-foreground">{calendar.name}</h1>
@@ -265,54 +265,59 @@ export default function Calendar({ organizationId, calendarId, currentUserId }: 
 
         {/* Calendar days */}
         <div className="grid grid-cols-7 gap-1">
-          {calendarDays.map((day, index) => (
-            <div
-              key={index}
-              onClick={() => day.isCurrentMonth && handleDayClick(day)}
-              className={`
-                min-h-[100px] p-2 border border-border cursor-pointer hover:bg-accent transition-colors
-                ${!day.isCurrentMonth ? 'bg-muted text-muted-foreground' : 'bg-card'}
-                ${day.isToday ? 'bg-primary/10 border-primary/30' : ''}
-              `}
-            >
-              <div className={`
-                text-sm font-medium mb-1
-                ${day.isToday ? 'text-primary' : day.isCurrentMonth ? 'text-card-foreground' : 'text-muted-foreground'}
-              `}>
-                {day.date.getDate()}
-              </div>
-              
-              {/* Events */}
-              <div className="space-y-1">
-                {day.events.slice(0, 3).map((event, eventIndex) => {
-                  const eventColor = getEventColor(event.id || `temp-${eventIndex}`);
-                  return (
-                    <div
-                      key={eventIndex}
-                      onClick={(e) => handleEventClick(event, e)}
-                      className={`text-xs p-1 rounded truncate cursor-pointer transition-colors font-medium shadow-sm ${eventColor.bg} ${eventColor.text} hover:opacity-90`}
-                      title={`${event.title} ${event.startTime ? `- ${formatTime(event.startTime)}` : ''}`}
+          {calendarDays.map((day, index) => {
+            const staggerClass = `calendar-day-stagger-${(index % 7) + 1}`;
+            return (
+              <div
+                key={index}
+                onClick={() => day.isCurrentMonth && handleDayClick(day)}
+                className={`
+                  min-h-[100px] p-2 border border-border cursor-pointer transition-all duration-200 hover:shadow-sm
+                  ${!day.isCurrentMonth ? 'bg-muted text-muted-foreground hover:bg-muted/80' : 'bg-card hover:bg-accent/50'}
+                  ${day.isToday ? 'bg-primary/10 border-primary/30 animate-pulse-subtle' : ''}
+                  animate-scale-in ${staggerClass}
+                `}
+              >
+                <div className={`
+                  text-sm font-medium mb-1 transition-colors duration-200
+                  ${day.isToday ? 'text-primary' : day.isCurrentMonth ? 'text-card-foreground' : 'text-muted-foreground'}
+                `}>
+                  {day.date.getDate()}
+                </div>
+                
+                {/* Events */}
+                <div className="space-y-1">
+                  {day.events.slice(0, 3).map((event, eventIndex) => {
+                    const eventColor = getEventColor(event.id || `temp-${eventIndex}`);
+                    return (
+                      <div
+                        key={eventIndex}
+                        onClick={(e) => handleEventClick(event, e)}
+                        className={`text-xs p-1 rounded truncate cursor-pointer event-item-animate font-medium shadow-sm transition-all duration-200 ${eventColor.bg} ${eventColor.text} hover:opacity-90 hover:shadow-md hover:scale-[1.02]`}
+                        title={`${event.title} ${event.startTime ? `- ${formatTime(event.startTime)}` : ''}`}
+                        style={{ animationDelay: `${0.1 + eventIndex * 0.05}s` }}
+                      >
+                        {event.isAllDay ? event.title : `${formatTime(event.startTime!)} ${event.title}`}
+                      </div>
+                    );
+                  })}
+                  {day.events.length > 3 && (
+                    <div 
+                      className="text-xs text-muted-foreground hover:text-foreground cursor-pointer font-medium transition-all duration-200 hover:scale-105"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedDate(day.date);
+                        setSelectedDayEvents(day.events);
+                        setShowDayViewModal(true);
+                      }}
                     >
-                      {event.isAllDay ? event.title : `${formatTime(event.startTime!)} ${event.title}`}
+                      +{day.events.length - 3} more
                     </div>
-                  );
-                })}
-                {day.events.length > 3 && (
-                  <div 
-                    className="text-xs text-muted-foreground hover:text-foreground cursor-pointer font-medium"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedDate(day.date);
-                      setSelectedDayEvents(day.events);
-                      setShowDayViewModal(true);
-                    }}
-                  >
-                    +{day.events.length - 3} more
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

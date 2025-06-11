@@ -92,8 +92,8 @@ export default function ImportIcsModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-card rounded-lg p-6 w-full max-w-md border border-border shadow-lg">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-modal-backdrop">
+      <div className="bg-card rounded-lg p-6 w-full max-w-md border border-border shadow-lg animate-modal-content">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-card-foreground">Import ICS File</h2>
           <button

@@ -61,8 +61,8 @@ export default function EventDetailsModal({
     new Date(event.startTime).toDateString() === new Date(event.endTime).toDateString();
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-card rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-border">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-modal-backdrop">
+      <div className="bg-card rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-border animate-modal-content">
         {/* Header */}
         <div className="relative">
           {/* Colorful header background */}

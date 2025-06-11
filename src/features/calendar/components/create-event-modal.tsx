@@ -115,8 +115,8 @@ export default function CreateEventModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-card rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border border-border shadow-lg">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-modal-backdrop">
+      <div className="bg-card rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border border-border shadow-lg animate-modal-content">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-card-foreground">Create New Event</h2>
           <button
@@ -139,7 +139,7 @@ export default function CreateEventModal({
               value={formData.title}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground"
+              className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground input-focus-animate"
               placeholder="Enter event title"
             />
           </div>

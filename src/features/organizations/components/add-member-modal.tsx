@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, UserPlus, Mail, Shield, User, Calendar, Image, FileText } from 'lucide-react';
 import { useAddOrganizationMember } from '../hooks/useOrganizationMembers';
 import type { OrganizationMemberModel } from '../../../api/models/OrganizationMemberModel';
+import ImageUpload from '@/components/ui/image-upload';
 
 interface AddMemberModalProps {
   isOpen: boolean;
@@ -40,10 +41,6 @@ export default function AddMemberModal({ isOpen, onClose, organizationId }: AddM
 
     if (formData.dateOfBirth && new Date(formData.dateOfBirth) > new Date()) {
       newErrors.dateOfBirth = 'Date of birth cannot be in the future';
-    }
-
-    if (formData.profilePictureUrl && !/^https?:\/\/.+/.test(formData.profilePictureUrl)) {
-      newErrors.profilePictureUrl = 'Please enter a valid URL';
     }
 
     setErrors(newErrors);
@@ -234,25 +231,16 @@ export default function AddMemberModal({ isOpen, onClose, organizationId }: AddM
                   )}
                 </div>
 
-                {/* Profile Picture URL */}
+                {/* Profile Picture */}
                 <div>
-                  <label htmlFor="profilePictureUrl" className="block text-sm font-medium text-foreground mb-1">
-                    <Image className="h-4 w-4 inline mr-1" />
-                    Profile Picture URL
-                  </label>
-                  <input
-                    type="url"
-                    id="profilePictureUrl"
-                    value={formData.profilePictureUrl || ''}
-                    onChange={(e) => handleInputChange('profilePictureUrl', e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground ${
-                      errors.profilePictureUrl ? 'border-red-500' : 'border-input'
-                    }`}
-                    placeholder="https://example.com/avatar.jpg"
+                  <ImageUpload
+                    value={formData.profilePictureUrl || null}
+                    onChange={(url) => handleInputChange('profilePictureUrl', url || '')}
+                    label="Profile Picture"
+                    placeholder="Click to upload member's profile picture"
+                    error={errors.profilePictureUrl}
+                    disabled={addMemberMutation.isPending}
                   />
-                  {errors.profilePictureUrl && (
-                    <p className="mt-1 text-sm text-red-500">{errors.profilePictureUrl}</p>
-                  )}
                 </div>
 
                 {/* Bio */}

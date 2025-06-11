@@ -16,6 +16,7 @@ import { useUserProfile, useUpdateUserProfile } from '../hooks/useUser';
 import ForgotPasswordModal from './forgot-password-modal';
 import type { UpdateUserProfileModel } from '@/api/models/UpdateUserProfileModel';
 import ChangePasswordModal from './change-password-modal';
+import ImageUpload from '@/components/ui/image-upload';
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'settings'>('profile');
@@ -62,10 +63,6 @@ export default function UserProfile() {
 
     if (formData.dateOfBirth && new Date(formData.dateOfBirth) > new Date()) {
       newErrors.dateOfBirth = 'Date of birth cannot be in the future';
-    }
-
-    if (formData.profilePictureUrl && !/^https?:\/\/.+/.test(formData.profilePictureUrl)) {
-      newErrors.profilePictureUrl = 'Please enter a valid URL';
     }
 
     setErrors(newErrors);
@@ -370,31 +367,40 @@ export default function UserProfile() {
                   )}
                 </div>
 
-                {/* Profile Picture URL */}
+                {/* Profile Picture */}
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    <Image className="h-4 w-4 inline mr-1" />
-                    Profile Picture URL
-                  </label>
                   {isEditing ? (
+                    <ImageUpload
+                      value={formData.profilePictureUrl}
+                      onChange={(url) => handleInputChange('profilePictureUrl', url)}
+                      label="Profile Picture"
+                      placeholder="Click to upload your profile picture"
+                      error={errors.profilePictureUrl}
+                      disabled={updateProfileMutation.isPending}
+                    />
+                  ) : (
                     <div>
-                      <input
-                        type="url"
-                        value={formData.profilePictureUrl || ''}
-                        onChange={(e) => handleInputChange('profilePictureUrl', e.target.value || null)}
-                        className={`w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                          errors.profilePictureUrl ? 'border-red-500' : 'border-input'
-                        }`}
-                        placeholder="https://example.com/avatar.jpg"
-                      />
-                      {errors.profilePictureUrl && (
-                        <p className="mt-1 text-sm text-red-500">{errors.profilePictureUrl}</p>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        <Image className="h-4 w-4 inline mr-1" />
+                        Profile Picture
+                      </label>
+                      {userProfile.profilePictureUrl ? (
+                        <div className="flex items-center space-x-3">
+                          <img
+                            src={userProfile.profilePictureUrl}
+                            alt="Profile"
+                            className="h-16 w-16 rounded-lg object-cover border border-border"
+                          />
+                          <p className="text-sm text-card-foreground font-medium">
+                            Profile picture uploaded
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-card-foreground font-medium">
+                          No profile picture uploaded
+                        </p>
                       )}
                     </div>
-                  ) : (
-                    <p className="text-sm text-card-foreground font-medium">
-                      {userProfile.profilePictureUrl || 'Not provided'}
-                    </p>
                   )}
                 </div>
 

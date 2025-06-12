@@ -1,7 +1,6 @@
 import axios from 'axios';
 import type { InternalAxiosRequestConfig } from 'axios';
 import { AuthConfig } from './auth-config';
-import { userService } from './api-client';
 
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -61,9 +60,13 @@ export const responseInterceptor = async (error: any) => {
       throw new Error('No refresh token available');
     }
 
-    const response = await userService.postApiAuthRefresh({
-      requestBody: { refreshToken }
+    // Make direct axios call to avoid circular dependency
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    const refreshResponse = await axios.post(`${baseUrl}/api/auth/refresh`, {
+      refreshToken
     });
+
+    const response = refreshResponse.data;
 
     // Store new tokens
     AuthConfig.setTokens({

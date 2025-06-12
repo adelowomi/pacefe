@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { X, Clock, MapPin, User, Calendar, Plus } from 'lucide-react';
 import type { CalendarEventView } from '@/api/models/CalendarEventView';
 import { getEventColor } from '@/lib/event-colors';
@@ -51,8 +50,8 @@ export default function DayViewModal({
   });
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-card rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden border border-border">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-modal-backdrop">
+      <div className="bg-card rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden border border-border animate-modal-content">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
@@ -86,13 +85,14 @@ export default function DayViewModal({
             </div>
           ) : (
             <div className="space-y-4">
-              {sortedEvents.map((event) => {
+              {sortedEvents.map((event, index) => {
                 const eventColor = getEventColor(event.id || `temp-${event.title}`);
                 return (
                   <div
                     key={event.id}
                     onClick={() => onEventClick(event)}
-                    className="border border-border rounded-lg p-4 hover:bg-accent cursor-pointer transition-colors relative overflow-hidden"
+                    className="border border-border rounded-lg p-4 hover:bg-accent cursor-pointer transition-all duration-200 relative overflow-hidden animate-slide-in-up hover:shadow-md hover:scale-[1.01]"
+                    style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     {/* Colored left border */}
                     <div className={`absolute left-0 top-0 bottom-0 w-1 ${eventColor.bg}`}></div>

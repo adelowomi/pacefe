@@ -22,6 +22,7 @@ export function useLogin() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
+	const [showForgotPassword, setShowForgotPassword] = useState(false);
 
 	const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value, type, checked } = e.target;
@@ -126,7 +127,11 @@ export function useLogin() {
 	}, []);
 
 	const handleForgotPasswordClick = useCallback(() => {
-		console.log("Navigate to forgot password page");
+		setShowForgotPassword(true);
+	}, []);
+
+	const handleCloseForgotPassword = useCallback(() => {
+		setShowForgotPassword(false);
 	}, []);
 
 	return {
@@ -135,6 +140,7 @@ export function useLogin() {
 		showPassword,
 		isLoading,
 		error,
+		showForgotPassword,
 		
 		// Handlers
 		handleInputChange,
@@ -142,5 +148,6 @@ export function useLogin() {
 		handleSubmit,
 		handleSignUpClick,
 		handleForgotPasswordClick,
+		handleCloseForgotPassword,
 	};
 }

@@ -170,7 +170,7 @@ export default function Dashboard() {
 
 					{/* Stats Grid */}
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-						<div className="bg-card rounded-xl shadow-sm p-6 border border-border">
+						<div className="bg-card rounded-xl shadow-sm p-6 border border-border transform transition-all duration-300 hover:scale-105 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
 							<div className="flex items-center justify-between">
 								<div>
 									<p className="text-sm font-medium text-muted-foreground">Total Transfers</p>
@@ -188,7 +188,7 @@ export default function Dashboard() {
 							</div>
 						</div>
 
-						<div className="bg-card rounded-xl shadow-sm p-6 border border-border">
+						<div className="bg-card rounded-xl shadow-sm p-6 border border-border transform transition-all duration-300 hover:scale-105 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
 							<div className="flex items-center justify-between">
 								<div>
 									<p className="text-sm font-medium text-muted-foreground">Pending Transfers</p>
@@ -205,7 +205,7 @@ export default function Dashboard() {
 							</div>
 						</div>
 
-						<div className="bg-card rounded-xl shadow-sm p-6 border border-border">
+						<div className="bg-card rounded-xl shadow-sm p-6 border border-border transform transition-all duration-300 hover:scale-105 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
 							<div className="flex items-center justify-between">
 								<div>
 									<p className="text-sm font-medium text-muted-foreground">Successful Transfers</p>
@@ -223,7 +223,7 @@ export default function Dashboard() {
 							</div>
 						</div>
 
-						<div className="bg-card rounded-xl shadow-sm p-6 border border-border">
+						<div className="bg-card rounded-xl shadow-sm p-6 border border-border transform transition-all duration-300 hover:scale-105 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
 							<div className="flex items-center justify-between">
 								<div>
 									<p className="text-sm font-medium text-muted-foreground">Team Members</p>
@@ -244,7 +244,7 @@ export default function Dashboard() {
 					{/* Direct Debit Info */}
 					{dashboardData?.hasActiveDirectDebit && (
 						<div className="mb-8">
-							<div className="bg-primary/10 border border-primary/20 rounded-xl p-6">
+							<div className="bg-primary/10 border border-primary/20 rounded-xl p-6 transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
 								<div className="flex items-center justify-between">
 									<div>
 										<h3 className="text-lg font-semibold text-primary">Active Direct Debit</h3>
@@ -268,7 +268,7 @@ export default function Dashboard() {
 					<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 						{/* Recent Transfers */}
 						<div className="lg:col-span-2">
-							<div className="bg-card rounded-xl shadow-sm border border-border">
+							<div className="bg-card rounded-xl shadow-sm border border-border transform transition-all duration-300 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
 								<div className="p-6 border-b border-border">
 									<div className="flex items-center justify-between">
 										<h3 className="text-lg font-semibold text-card-foreground">Recent Transfers</h3>
@@ -285,8 +285,8 @@ export default function Dashboard() {
 								<div className="p-6">
 									{dashboardData?.recentTransfers && dashboardData.recentTransfers.length > 0 ? (
 										<div className="space-y-4">
-											{dashboardData.recentTransfers.map((transfer) => (
-												<div key={transfer.id} className="flex items-start space-x-3 p-4 border border-border rounded-lg">
+											{dashboardData.recentTransfers.map((transfer, index) => (
+												<div key={transfer.id} className="flex items-start space-x-3 p-4 border border-border rounded-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:bg-accent/50 animate-fade-in" style={{ animationDelay: `${0.8 + index * 0.1}s` }}>
 													<div className="flex-shrink-0 w-8 h-8 bg-muted rounded-full flex items-center justify-center">
 														{getTransferStatusIcon(transfer.status)}
 													</div>
@@ -325,31 +325,31 @@ export default function Dashboard() {
 						{/* Quick Actions & Team Members */}
 						<div className="space-y-6">
 							{/* Quick Actions */}
-							<div className="bg-card rounded-xl shadow-sm border border-border">
+							<div className="bg-card rounded-xl shadow-sm border border-border transform transition-all duration-300 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
 								<div className="p-6 border-b border-border">
 									<h3 className="text-lg font-semibold text-card-foreground">Quick Actions</h3>
 								</div>
 								<div className="p-6">
 									<div className="space-y-3">
-										<button className="w-full flex items-center justify-between p-3 text-left border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
+										<button className="w-full flex items-center justify-between p-3 text-left border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:scale-[1.02] hover:shadow-sm">
 											<div className="flex items-center">
 												<Plus className="w-5 h-5 text-primary mr-3" />
 												<span className="text-sm font-medium">New Transfer</span>
 											</div>
 										</button>
-										<button className="w-full flex items-center justify-between p-3 text-left border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
+										<button className="w-full flex items-center justify-between p-3 text-left border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:scale-[1.02] hover:shadow-sm">
 											<div className="flex items-center">
 												<Users className="w-5 h-5 text-green-600 mr-3" />
 												<span className="text-sm font-medium">Manage Recipients</span>
 											</div>
 										</button>
-										<button className="w-full flex items-center justify-between p-3 text-left border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
+										<button className="w-full flex items-center justify-between p-3 text-left border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:scale-[1.02] hover:shadow-sm">
 											<div className="flex items-center">
 												<Calendar className="w-5 h-5 text-purple-600 mr-3" />
 												<span className="text-sm font-medium">Schedule Transfer</span>
 											</div>
 										</button>
-										<button className="w-full flex items-center justify-between p-3 text-left border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
+										<button className="w-full flex items-center justify-between p-3 text-left border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:scale-[1.02] hover:shadow-sm">
 											<div className="flex items-center">
 												<BarChart3 className="w-5 h-5 text-orange-600 mr-3" />
 												<span className="text-sm font-medium">View Reports</span>
@@ -361,14 +361,14 @@ export default function Dashboard() {
 
 							{/* Team Members */}
 							{dashboardData?.teamMembers && dashboardData.teamMembers.length > 0 && (
-								<div className="bg-card rounded-xl shadow-sm border border-border">
+								<div className="bg-card rounded-xl shadow-sm border border-border transform transition-all duration-300 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
 									<div className="p-6 border-b border-border">
 										<h3 className="text-lg font-semibold text-card-foreground">Team Members</h3>
 									</div>
 									<div className="p-6">
 										<div className="space-y-3">
-											{dashboardData.teamMembers.slice(0, 5).map((member) => (
-												<div key={member.id} className="flex items-center space-x-3">
+											{dashboardData.teamMembers.slice(0, 5).map((member, index) => (
+												<div key={member.id} className="flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 hover:bg-accent/50 animate-fade-in" style={{ animationDelay: `${1.0 + index * 0.1}s` }}>
 													<div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
 														<span className="text-primary-foreground text-sm font-medium">
 															{member.user?.firstName?.charAt(0) || member.user?.email?.charAt(0) || 'U'}

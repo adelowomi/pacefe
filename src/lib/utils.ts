@@ -20,3 +20,12 @@ export type StandardResponseOfAccessTokenResponse = {
 	Timestamp?: string;
 };
 
+export type StandardResponseOfCapitalizedString = {
+	Success?: boolean;
+	Message?: string | null;
+	Data?: string;
+	StatusCode?: HttpStatusCode;
+	Errors?: any;
+	Timestamp?: string;
+};
+

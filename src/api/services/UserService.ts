@@ -3,17 +3,23 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { AccessTokenResponse } from '../models/AccessTokenResponse';
+import type { ChangePasswordModel } from '../models/ChangePasswordModel';
+import type { CompletePasswordResetModel } from '../models/CompletePasswordResetModel';
 import type { ForgotPasswordRequest } from '../models/ForgotPasswordRequest';
 import type { InfoRequest } from '../models/InfoRequest';
 import type { InfoResponse } from '../models/InfoResponse';
+import type { InitiatePasswordResetModel } from '../models/InitiatePasswordResetModel';
 import type { LoginRequest } from '../models/LoginRequest';
 import type { RefreshRequest } from '../models/RefreshRequest';
 import type { RegisterRequest } from '../models/RegisterRequest';
 import type { RegisterRequest2 } from '../models/RegisterRequest2';
 import type { ResendConfirmationEmailRequest } from '../models/ResendConfirmationEmailRequest';
 import type { ResetPasswordRequest } from '../models/ResetPasswordRequest';
+import type { StandardResponseOfstring } from '../models/StandardResponseOfstring';
+import type { StandardResponseOfUserView } from '../models/StandardResponseOfUserView';
 import type { TwoFactorRequest } from '../models/TwoFactorRequest';
 import type { TwoFactorResponse } from '../models/TwoFactorResponse';
+import type { UpdateUserProfileModel } from '../models/UpdateUserProfileModel';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class UserService {
@@ -249,6 +255,105 @@ export class UserService {
       errors: {
         400: `Bad Request`,
         404: `Not Found`,
+      },
+    });
+  }
+  /**
+   * @returns StandardResponseOfUserView OK
+   * @throws ApiError
+   */
+  public getUserProfileAsync(): CancelablePromise<StandardResponseOfUserView> {
+    return this.httpRequest.request({
+      method: 'GET',
+      url: '/api/User/profile',
+      errors: {
+        401: `Unauthorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+  /**
+   * @returns StandardResponseOfUserView OK
+   * @throws ApiError
+   */
+  public updateUserProfileAsync({
+    requestBody,
+  }: {
+    requestBody: UpdateUserProfileModel,
+  }): CancelablePromise<StandardResponseOfUserView> {
+    return this.httpRequest.request({
+      method: 'PUT',
+      url: '/api/User/profile',
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
+        400: `Bad Request`,
+        401: `Unauthorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+  /**
+   * @returns StandardResponseOfstring OK
+   * @throws ApiError
+   */
+  public initiatePasswordResetAsync({
+    requestBody,
+  }: {
+    requestBody: InitiatePasswordResetModel,
+  }): CancelablePromise<StandardResponseOfstring> {
+    return this.httpRequest.request({
+      method: 'POST',
+      url: '/api/User/password/initiate-reset',
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
+        400: `Bad Request`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+  /**
+   * @returns StandardResponseOfstring OK
+   * @throws ApiError
+   */
+  public completePasswordResetAsync({
+    requestBody,
+  }: {
+    requestBody: CompletePasswordResetModel,
+  }): CancelablePromise<StandardResponseOfstring> {
+    return this.httpRequest.request({
+      method: 'POST',
+      url: '/api/User/password/complete-reset',
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
+        400: `Bad Request`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+  /**
+   * @returns StandardResponseOfstring OK
+   * @throws ApiError
+   */
+  public changePasswordAsync({
+    requestBody,
+  }: {
+    requestBody: ChangePasswordModel,
+  }): CancelablePromise<StandardResponseOfstring> {
+    return this.httpRequest.request({
+      method: 'POST',
+      url: '/api/User/password/change',
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
+        400: `Bad Request`,
+        401: `Unauthorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
       },
     });
   }

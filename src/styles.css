@@ -1,4 +1,4 @@
-@import "tailwindcss"  source("../");
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -131,4 +131,208 @@ code {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom animations for dashboard cards */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modal-backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-content-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes calendar-day-hover {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes event-item-hover {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slide-in-up {
+  animation: slide-in-up 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slide-in-down {
+  animation: slide-in-down 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-modal-backdrop {
+  animation: modal-backdrop-fade-in 0.2s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-modal-content {
+  animation: modal-content-slide-in 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Calendar-specific animations */
+.calendar-day-animate {
+  transition: all 0.2s ease-out;
+}
+
+.calendar-day-animate:hover {
+  animation: calendar-day-hover 0.2s ease-out forwards;
+}
+
+.event-item-animate {
+  transition: all 0.2s ease-out;
+}
+
+.event-item-animate:hover {
+  animation: event-item-hover 0.2s ease-out forwards;
+}
+
+/* Staggered animation delays for calendar grid */
+.calendar-day-stagger-1 { animation-delay: 0.05s; }
+.calendar-day-stagger-2 { animation-delay: 0.1s; }
+.calendar-day-stagger-3 { animation-delay: 0.15s; }
+.calendar-day-stagger-4 { animation-delay: 0.2s; }
+.calendar-day-stagger-5 { animation-delay: 0.25s; }
+.calendar-day-stagger-6 { animation-delay: 0.3s; }
+.calendar-day-stagger-7 { animation-delay: 0.35s; }
+
+/* Form input focus animations */
+.input-focus-animate {
+  transition: all 0.2s ease-out;
+}
+
+.input-focus-animate:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth transitions for interactive elements */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced hover effects */
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+.hover\:scale-\[1\.02\]:hover {
+  transform: scale(1.02);
+}
+
+/* Custom shadow effects */
+.hover\:shadow-lg:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.hover\:shadow-md:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.hover\:shadow-sm:hover {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }

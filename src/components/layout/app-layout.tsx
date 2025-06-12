@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { useLocation } from '@tanstack/react-router';
 import Sidebar from '@/features/dashboard/components/sidebar';
 import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
@@ -12,8 +12,7 @@ interface AppLayoutProps {
 
 export default function AppLayout({ 
   children, 
-  selectedOrganizationId, 
-  onOrganizationChange 
+  selectedOrganizationId 
 }: AppLayoutProps) {
   const location = useLocation();
   const { data: dashboardData, isLoading } = useDashboard(selectedOrganizationId);

@@ -5,8 +5,8 @@
 /* eslint-env node */
 
 // const formatCommand = 'prettier --write';
-const lintCommand = 'npm run lint:fix';
-const testCommand = 'npm run test';
+const lintCommand = 'pnpm run lint:fix';
+const testCommand = 'pnpm run test';
 
 export default {
 	'*.{js,jsx,ts,tsx,html,css}': [lintCommand],

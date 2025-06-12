@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearch } from "@tanstack/react-router";
 import { useEmailConfirmation } from "../hooks/useEmailConfirmation";
+import { DarkModeToggle } from "@/components/ui/dark-mode-toggle";
 
 interface EmailConfirmationSearchParams {
 	userId?: string;
@@ -27,20 +28,26 @@ export default function EmailConfirmation() {
 		const { userId, token } = search;
 		
 		if (userId && token) {
+			// Token is already properly decoded at the route level
 			confirmEmail(userId, token);
 		}
 	}, [search, confirmEmail]);
 
 	if (isLoading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50">
+			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+				{/* Dark Mode Toggle */}
+				<div className="absolute top-4 right-4">
+					<DarkModeToggle />
+				</div>
+				
 				<div className="max-w-md w-full space-y-8 p-8">
 					<div className="text-center">
 						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-						<h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+						<h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
 							Confirming your email...
 						</h2>
-						<p className="mt-2 text-sm text-gray-600">
+						<p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
 							Please wait while we verify your email address.
 						</p>
 					</div>
@@ -51,12 +58,17 @@ export default function EmailConfirmation() {
 
 	if (isSuccess) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50">
+			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+				{/* Dark Mode Toggle */}
+				<div className="absolute top-4 right-4">
+					<DarkModeToggle />
+				</div>
+				
 				<div className="max-w-md w-full space-y-8 p-8">
 					<div className="text-center">
-						<div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+						<div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/20">
 							<svg
-								className="h-6 w-6 text-green-600"
+								className="h-6 w-6 text-green-600 dark:text-green-400"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -70,10 +82,10 @@ export default function EmailConfirmation() {
 								></path>
 							</svg>
 						</div>
-						<h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+						<h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
 							Email Confirmed!
 						</h2>
-						<p className="mt-2 text-sm text-gray-600">
+						<p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
 							{message}
 						</p>
 						<div className="mt-6">

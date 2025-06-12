@@ -17,5 +17,17 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
     },
-  }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          axios: ['axios'],
+        },
+      },
+    },
+    sourcemap: false,
+    minify: 'esbuild',
+  },
 });

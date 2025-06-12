@@ -10,11 +10,13 @@ import {
   UserPlus,
   Shield,
   Trash2,
-  Settings
+  Settings,
+  Plus
 } from 'lucide-react';
 import { useOrganization } from '../hooks/useOrganization';
 import { useOrganizationMembers, useRemoveOrganizationMember, useUpdateMemberRole } from '../hooks/useOrganizationMembers';
 import AddMemberModal from './add-member-modal';
+import CreateOrganizationModal from './create-organization-modal';
 
 interface OrganizationPageProps {
   organizationId: string;
@@ -23,6 +25,7 @@ interface OrganizationPageProps {
 export default function OrganizationPage({ organizationId }: OrganizationPageProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'settings'>('overview');
   const [showAddMember, setShowAddMember] = useState(false);
+  const [showCreateOrganization, setShowCreateOrganization] = useState(false);
 
   const { data: organizationData, isLoading: isLoadingOrg } = useOrganization(organizationId);
   const { data: membersData, isLoading: isLoadingMembers } = useOrganizationMembers(organizationId);
@@ -58,6 +61,11 @@ export default function OrganizationPage({ organizationId }: OrganizationPagePro
     );
   }
 
+  const handleCreateOrganizationSuccess = (organizationId: string) => {
+    // Optionally navigate to the new organization or refresh the current one
+    window.location.reload();
+  };
+
   if (!organization) {
     return (
       <div className="text-center py-12">
@@ -66,6 +74,22 @@ export default function OrganizationPage({ organizationId }: OrganizationPagePro
         <p className="mt-1 text-sm text-muted-foreground">
           The organization you're looking for doesn't exist or you don't have access to it.
         </p>
+        <div className="mt-6">
+          <button
+            onClick={() => setShowCreateOrganization(true)}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create Organization
+          </button>
+        </div>
+        
+        {/* Create Organization Modal */}
+        <CreateOrganizationModal
+          isOpen={showCreateOrganization}
+          onClose={() => setShowCreateOrganization(false)}
+          onSuccess={handleCreateOrganizationSuccess}
+        />
       </div>
     );
   }

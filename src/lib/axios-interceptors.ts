@@ -37,6 +37,11 @@ export const responseInterceptor = async (error: any) => {
     return Promise.reject(error);
   }
 
+  // Don't retry 401 errors for login requests
+  if (originalRequest.url && originalRequest.url.includes('/api/auth/login')) {
+    return Promise.reject(error);
+  }
+
   if (isRefreshing) {
     // If already refreshing, queue this request
     try {

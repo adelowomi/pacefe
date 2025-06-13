@@ -12,5 +12,6 @@ export type UserView = {
   bio?: string | null;
   dateUpdated?: string | null;
   isActive?: boolean;
+  phoneNumber?: string | null;
 };
 

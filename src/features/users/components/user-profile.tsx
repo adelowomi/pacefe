@@ -10,13 +10,15 @@ import {
   FileText,
   Shield,
   Key,
-  Settings
+  Settings,
+  Phone
 } from 'lucide-react';
 import { useUserProfile, useUpdateUserProfile } from '../hooks/useUser';
 import ForgotPasswordModal from './forgot-password-modal';
 import type { UpdateUserProfileModel } from '@/api/models/UpdateUserProfileModel';
 import ChangePasswordModal from './change-password-modal';
 import ImageUpload from '@/components/ui/image-upload';
+import PhoneInput from '@/components/ui/phone-input';
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'settings'>('profile');
@@ -29,6 +31,7 @@ export default function UserProfile() {
     dateOfBirth: null,
     profilePictureUrl: null,
     bio: null,
+    phoneNumber: null,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -46,6 +49,7 @@ export default function UserProfile() {
         dateOfBirth: userProfile.dateOfBirth || null,
         profilePictureUrl: userProfile.profilePictureUrl || null,
         bio: userProfile.bio || null,
+        phoneNumber: userProfile.phoneNumber || null,
       });
     }
   }, [userProfile, isEditing]);
@@ -65,6 +69,13 @@ export default function UserProfile() {
       newErrors.dateOfBirth = 'Date of birth cannot be in the future';
     }
 
+    if (formData.phoneNumber && formData.phoneNumber.trim()) {
+      const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+      if (!phoneRegex.test(formData.phoneNumber.replace(/[\s\-\(\)]/g, ''))) {
+        newErrors.phoneNumber = 'Please enter a valid phone number';
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -77,6 +88,7 @@ export default function UserProfile() {
         dateOfBirth: userProfile.dateOfBirth || null,
         profilePictureUrl: userProfile.profilePictureUrl || null,
         bio: userProfile.bio || null,
+        phoneNumber: userProfile.phoneNumber || null,
       });
       setIsEditing(true);
     }
@@ -92,6 +104,7 @@ export default function UserProfile() {
         dateOfBirth: userProfile.dateOfBirth || null,
         profilePictureUrl: userProfile.profilePictureUrl || null,
         bio: userProfile.bio || null,
+        phoneNumber: userProfile.phoneNumber || null,
       });
     }
   };
@@ -331,6 +344,30 @@ export default function UserProfile() {
                   <p className="text-xs text-muted-foreground mt-1">
                     Email cannot be changed from this page
                   </p>
+                </div>
+
+                {/* Phone Number */}
+                <div>
+                  {isEditing ? (
+                    <PhoneInput
+                      label="Phone Number"
+                      value={formData.phoneNumber}
+                      onChange={(value) => handleInputChange('phoneNumber', value || null)}
+                      placeholder="Enter phone number"
+                      error={errors.phoneNumber}
+                      disabled={updateProfileMutation.isPending}
+                    />
+                  ) : (
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        <Phone className="h-4 w-4 inline mr-1" />
+                        Phone Number
+                      </label>
+                      <p className="text-sm text-card-foreground font-medium">
+                        {userProfile.phoneNumber || 'Not provided'}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Date of Birth */}

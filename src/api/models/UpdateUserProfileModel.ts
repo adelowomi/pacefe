@@ -8,5 +8,6 @@ export type UpdateUserProfileModel = {
   dateOfBirth?: string | null;
   profilePictureUrl?: string | null;
   bio?: string | null;
+  phoneNumber?: string | null;
 };
 

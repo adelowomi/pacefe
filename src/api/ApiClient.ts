@@ -12,6 +12,7 @@ import { OrganizationService } from './services/OrganizationService';
 import { OrganizationMemberService } from './services/OrganizationMemberService';
 import { TransferService } from './services/TransferService';
 import { UserService } from './services/UserService';
+import { WebhookService } from './services/WebhookService';
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 export class ApiClient {
   public readonly calendar: CalendarService;
@@ -21,10 +22,11 @@ export class ApiClient {
   public readonly organizationMember: OrganizationMemberService;
   public readonly transfer: TransferService;
   public readonly user: UserService;
+  public readonly webhook: WebhookService;
   public readonly request: BaseHttpRequest;
   constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = AxiosHttpRequest) {
     this.request = new HttpRequest({
-      BASE: config?.BASE ?? '',
+      BASE: config?.BASE ?? 'http://pace-api-c8gqe6g7ckbfcjhc.canadacentral-01.azurewebsites.net:80',
       VERSION: config?.VERSION ?? '1.0.0',
       WITH_CREDENTIALS: config?.WITH_CREDENTIALS ?? false,
       CREDENTIALS: config?.CREDENTIALS ?? 'include',
@@ -41,6 +43,7 @@ export class ApiClient {
     this.organizationMember = new OrganizationMemberService(this.request);
     this.transfer = new TransferService(this.request);
     this.user = new UserService(this.request);
+    this.webhook = new WebhookService(this.request);
   }
 }
 

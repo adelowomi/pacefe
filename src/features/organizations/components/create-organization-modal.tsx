@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, Building2, Globe, Mail, Phone } from 'lucide-react';
 import { useCreateOrganization } from '../hooks/useCreateOrganization';
 import type { OrganizationModel } from '../../../api/models/OrganizationModel';
+import PhoneInput from '@/components/ui/phone-input';
 
 interface CreateOrganizationModalProps {
   isOpen: boolean;
@@ -147,20 +148,13 @@ export default function CreateOrganizationModal({
           </div>
 
           {/* Contact Phone */}
-          <div>
-            <label htmlFor="contactPhone" className="block text-sm font-medium text-card-foreground mb-2">
-              <Phone className="inline h-4 w-4 mr-1" />
-              Contact Phone
-            </label>
-            <input
-              type="tel"
-              id="contactPhone"
-              value={formData.contactPhone || ''}
-              onChange={(e) => handleInputChange('contactPhone', e.target.value)}
-              className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="+1 (555) 123-4567"
-            />
-          </div>
+          <PhoneInput
+            label="Contact Phone"
+            value={formData.contactPhone}
+            onChange={(value) => handleInputChange('contactPhone', value)}
+            placeholder="Enter contact phone number"
+            disabled={createOrganizationMutation.isPending}
+          />
 
           {/* Logo URL */}
           <div>

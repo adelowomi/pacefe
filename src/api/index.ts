@@ -64,6 +64,7 @@ export type { StandardResponseOfstring } from './models/StandardResponseOfstring
 export type { StandardResponseOfTransferRecipientView } from './models/StandardResponseOfTransferRecipientView';
 export type { StandardResponseOfTransferRequestView } from './models/StandardResponseOfTransferRequestView';
 export type { StandardResponseOfUserView } from './models/StandardResponseOfUserView';
+export type { StandardResponseOfVirtualAccountView } from './models/StandardResponseOfVirtualAccountView';
 export type { TransferRecipientView } from './models/TransferRecipientView';
 export type { TransferRecipientView2 } from './models/TransferRecipientView2';
 export type { TransferRequestView } from './models/TransferRequestView';
@@ -73,6 +74,8 @@ export type { TwoFactorResponse } from './models/TwoFactorResponse';
 export type { UpdateUserProfileModel } from './models/UpdateUserProfileModel';
 export type { UserView } from './models/UserView';
 export type { UserView2 } from './models/UserView2';
+export type { VirtualAccountStatus } from './models/VirtualAccountStatus';
+export type { VirtualAccountView } from './models/VirtualAccountView';
 
 export { CalendarService } from './services/CalendarService';
 export { DashboardService } from './services/DashboardService';
@@ -81,3 +84,4 @@ export { OrganizationService } from './services/OrganizationService';
 export { OrganizationMemberService } from './services/OrganizationMemberService';
 export { TransferService } from './services/TransferService';
 export { UserService } from './services/UserService';
+export { WebhookService } from './services/WebhookService';

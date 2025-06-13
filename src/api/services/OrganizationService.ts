@@ -5,6 +5,7 @@
 import type { OrganizationModel } from '../models/OrganizationModel';
 import type { StandardResponseOfOrganizationView } from '../models/StandardResponseOfOrganizationView';
 import type { StandardResponseOfPagedCollectionOfOrganizationView } from '../models/StandardResponseOfPagedCollectionOfOrganizationView';
+import type { StandardResponseOfVirtualAccountView } from '../models/StandardResponseOfVirtualAccountView';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class OrganizationService {
@@ -83,6 +84,29 @@ export class OrganizationService {
       errors: {
         400: `Bad Request`,
         401: `Unauthorized`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+  /**
+   * @returns StandardResponseOfVirtualAccountView OK
+   * @throws ApiError
+   */
+  public assignVirtualAccountAsync({
+    id,
+  }: {
+    id: string,
+  }): CancelablePromise<StandardResponseOfVirtualAccountView> {
+    return this.httpRequest.request({
+      method: 'POST',
+      url: '/api/Organization/{id}/virtual-account',
+      path: {
+        'id': id,
+      },
+      errors: {
+        400: `Bad Request`,
+        401: `Unauthorized`,
+        404: `Not Found`,
         500: `Internal Server Error`,
       },
     });

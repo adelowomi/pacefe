@@ -20,7 +20,7 @@ export type OpenAPIConfig = {
 };
 
 export const OpenAPI: OpenAPIConfig = {
-  BASE: '',
+  BASE: 'http://pace-api-c8gqe6g7ckbfcjhc.canadacentral-01.azurewebsites.net:80',
   VERSION: '1.0.0',
   WITH_CREDENTIALS: false,
   CREDENTIALS: 'include',

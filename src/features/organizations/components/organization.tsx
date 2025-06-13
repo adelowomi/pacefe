@@ -11,12 +11,14 @@ import {
   Shield,
   Trash2,
   Settings,
-  Plus
+  Plus,
+  CreditCard
 } from 'lucide-react';
 import { useOrganization } from '../hooks/useOrganization';
 import { useOrganizationMembers, useRemoveOrganizationMember, useUpdateMemberRole } from '../hooks/useOrganizationMembers';
 import AddMemberModal from './add-member-modal';
 import CreateOrganizationModal from './create-organization-modal';
+import RequestVirtualAccountModal from './request-virtual-account-modal';
 
 interface OrganizationPageProps {
   organizationId: string;
@@ -26,6 +28,7 @@ export default function OrganizationPage({ organizationId }: OrganizationPagePro
   const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'settings'>('overview');
   const [showAddMember, setShowAddMember] = useState(false);
   const [showCreateOrganization, setShowCreateOrganization] = useState(false);
+  const [showRequestVirtualAccount, setShowRequestVirtualAccount] = useState(false);
 
   const { data: organizationData, isLoading: isLoadingOrg } = useOrganization(organizationId);
   const { data: membersData, isLoading: isLoadingMembers } = useOrganizationMembers(organizationId);
@@ -369,8 +372,15 @@ export default function OrganizationPage({ organizationId }: OrganizationPagePro
                     Edit Organization
                   </button>
                   <button 
-                    onClick={() => setActiveTab('members')}
+                    onClick={() => setShowRequestVirtualAccount(true)}
                     className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
+                  >
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    Request Virtual Account
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('members')}
+                    className="w-full flex items-center justify-center px-4 py-2 border border-input rounded-md shadow-sm text-sm font-medium text-muted-foreground bg-muted hover:bg-accent hover:text-accent-foreground transition-colors"
                   >
                     <Users className="h-4 w-4 mr-2" />
                     Manage Members
@@ -556,6 +566,14 @@ export default function OrganizationPage({ organizationId }: OrganizationPagePro
         isOpen={showAddMember}
         onClose={() => setShowAddMember(false)}
         organizationId={organizationId}
+      />
+
+      {/* Request Virtual Account Modal */}
+      <RequestVirtualAccountModal
+        isOpen={showRequestVirtualAccount}
+        onClose={() => setShowRequestVirtualAccount(false)}
+        organizationId={organizationId}
+        organizationName={organization.name || ''}
       />
     </div>
   );

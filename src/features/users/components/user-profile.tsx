@@ -18,6 +18,7 @@ import ForgotPasswordModal from './forgot-password-modal';
 import type { UpdateUserProfileModel } from '@/api/models/UpdateUserProfileModel';
 import ChangePasswordModal from './change-password-modal';
 import ImageUpload from '@/components/ui/image-upload';
+import PhoneInput from '@/components/ui/phone-input';
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'settings'>('profile');
@@ -347,29 +348,25 @@ export default function UserProfile() {
 
                 {/* Phone Number */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    <Phone className="h-4 w-4 inline mr-1" />
-                    Phone Number
-                  </label>
                   {isEditing ? (
-                    <div>
-                      <input
-                        type="tel"
-                        value={formData.phoneNumber || ''}
-                        onChange={(e) => handleInputChange('phoneNumber', e.target.value || null)}
-                        className={`w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                          errors.phoneNumber ? 'border-red-500' : 'border-input'
-                        }`}
-                        placeholder="Enter phone number"
-                      />
-                      {errors.phoneNumber && (
-                        <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>
-                      )}
-                    </div>
+                    <PhoneInput
+                      label="Phone Number"
+                      value={formData.phoneNumber}
+                      onChange={(value) => handleInputChange('phoneNumber', value || null)}
+                      placeholder="Enter phone number"
+                      error={errors.phoneNumber}
+                      disabled={updateProfileMutation.isPending}
+                    />
                   ) : (
-                    <p className="text-sm text-card-foreground font-medium">
-                      {userProfile.phoneNumber || 'Not provided'}
-                    </p>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        <Phone className="h-4 w-4 inline mr-1" />
+                        Phone Number
+                      </label>
+                      <p className="text-sm text-card-foreground font-medium">
+                        {userProfile.phoneNumber || 'Not provided'}
+                      </p>
+                    </div>
                   )}
                 </div>
 

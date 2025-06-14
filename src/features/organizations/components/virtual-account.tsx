@@ -23,9 +23,10 @@ import type { VirtualAccountTransactionView } from '../../../api/models/VirtualA
 interface VirtualAccountProps {
   organizationId: string;
   organizationName: string;
+  onRequestVirtualAccount?: () => void;
 }
 
-export default function VirtualAccount({ organizationId, organizationName }: VirtualAccountProps) {
+export default function VirtualAccount({ organizationId, organizationName, onRequestVirtualAccount }: VirtualAccountProps) {
   const [showAccountNumber, setShowAccountNumber] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -116,6 +117,44 @@ export default function VirtualAccount({ organizationId, organizationName }: Vir
         <p className="mt-1 text-sm text-muted-foreground">
           This organization doesn't have a virtual account yet or you don't have access to it.
         </p>
+      </div>
+    );
+  }
+
+  // Check if virtual account exists but doesn't have account number (still processing)
+  if (virtualAccount && !virtualAccount.accountNumber) {
+    return (
+      <div className="text-center py-12">
+        <div className="mx-auto h-12 w-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+          <RefreshCw className="h-6 w-6 text-yellow-600 dark:text-yellow-400 animate-spin" />
+        </div>
+        <h3 className="mt-2 text-sm font-medium text-foreground">Virtual Account Processing</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Your virtual account request is being processed. This usually takes a few minutes.
+        </p>
+        <div className="mt-6 space-y-3">
+          <div className="flex items-center justify-center space-x-3">
+            <button
+              onClick={handleRefresh}
+              className="inline-flex items-center px-4 py-2 border border-input rounded-md shadow-sm text-sm font-medium text-muted-foreground bg-muted hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Check Status
+            </button>
+            {onRequestVirtualAccount && (
+              <button
+                onClick={onRequestVirtualAccount}
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
+              >
+                <CreditCard className="h-4 w-4 mr-2" />
+                Request Again
+              </button>
+            )}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Request submitted: {virtualAccount.requestedAt ? formatDate(virtualAccount.requestedAt) : 'Recently'}
+          </div>
+        </div>
       </div>
     );
   }

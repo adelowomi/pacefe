@@ -560,6 +560,7 @@ export default function OrganizationPage({ organizationId }: OrganizationPagePro
         <VirtualAccount 
           organizationId={organizationId}
           organizationName={organization.name || ''}
+          onRequestVirtualAccount={() => setShowRequestVirtualAccount(true)}
         />
       )}
 

@@ -13,14 +13,20 @@ import {
 	Clock,
 	CheckCircle,
 	XCircle,
-	AlertCircle
+	AlertCircle,
+	Wallet,
+	Copy
 } from "lucide-react";
 import { useDashboard } from "../hooks/useDashboard";
+import { useVirtualAccount } from "@/features/organizations/hooks/useVirtualAccount";
 import AppLayout from "@/components/layout/app-layout";
 
 export default function Dashboard() {
 	const [selectedOrganizationId, setSelectedOrganizationId] = useState<string | undefined>();
 	const { data: dashboardData, isLoading, error } = useDashboard(selectedOrganizationId);
+	const { data: virtualAccountData } = useVirtualAccount(selectedOrganizationId || dashboardData?.currentOrganization?.id || '', !!dashboardData?.currentOrganization?.id);
+
+	const virtualAccount = virtualAccountData?.data;
 
 	const formatCurrency = (amount: number) => {
 		return new Intl.NumberFormat('en-NG', {
@@ -170,6 +176,40 @@ export default function Dashboard() {
 
 					{/* Stats Grid */}
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+						{/* Balance Card */}
+						<div className="bg-card rounded-xl shadow-sm p-6 border border-border transform transition-all duration-300 hover:scale-105 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+							<div className="flex items-center justify-between">
+								<div>
+									<p className="text-sm font-medium text-muted-foreground">Balance</p>
+									<p className="text-3xl font-bold text-card-foreground">
+										{formatCurrency(dashboardData?.currentOrganization?.balance || 0)}
+									</p>
+								</div>
+								<div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
+									<Wallet className="w-6 h-6 text-blue-600" />
+								</div>
+							</div>
+							{virtualAccount?.accountNumber && virtualAccount.bankName && (
+								<div className="mt-4">
+									<p className="text-xs text-muted-foreground mb-1">Top up account</p>
+									<div className="flex items-center justify-between bg-muted/50 rounded-md p-2">
+										<div>
+											<p className="text-sm font-medium">{virtualAccount.accountNumber}</p>
+											<p className="text-xs text-muted-foreground">{virtualAccount.bankName}</p>
+										</div>
+										<button
+											onClick={() => navigator.clipboard.writeText(virtualAccount.accountNumber || '')}
+											className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+											title="Copy account number"
+										>
+											<Copy className="w-4 h-4" />
+										</button>
+									</div>
+								</div>
+							)}
+						</div>
+
+						{/* Total Transfers Card */}
 						<div className="bg-card rounded-xl shadow-sm p-6 border border-border transform transition-all duration-300 hover:scale-105 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
 							<div className="flex items-center justify-between">
 								<div>

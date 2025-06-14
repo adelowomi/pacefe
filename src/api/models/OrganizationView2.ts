@@ -11,5 +11,6 @@ export type OrganizationView2 = {
   websiteUrl?: string | null;
   contactEmail?: string | null;
   contactPhone?: string | null;
+  balance?: number;
 };
 

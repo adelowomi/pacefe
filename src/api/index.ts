@@ -39,6 +39,7 @@ export type { OrganizationModel } from './models/OrganizationModel';
 export type { OrganizationView } from './models/OrganizationView';
 export type { OrganizationView2 } from './models/OrganizationView2';
 export type { PagedCollectionOfOrganizationView } from './models/PagedCollectionOfOrganizationView';
+export type { PagedCollectionOfVirtualAccountTransactionView } from './models/PagedCollectionOfVirtualAccountTransactionView';
 export type { PaginationLinks } from './models/PaginationLinks';
 export type { PaginationMetadata } from './models/PaginationMetadata';
 export type { RefreshRequest } from './models/RefreshRequest';
@@ -60,6 +61,7 @@ export type { StandardResponseOfListOfTransferRequestView } from './models/Stand
 export type { StandardResponseOfOrganizationMemberView } from './models/StandardResponseOfOrganizationMemberView';
 export type { StandardResponseOfOrganizationView } from './models/StandardResponseOfOrganizationView';
 export type { StandardResponseOfPagedCollectionOfOrganizationView } from './models/StandardResponseOfPagedCollectionOfOrganizationView';
+export type { StandardResponseOfPagedCollectionOfVirtualAccountTransactionView } from './models/StandardResponseOfPagedCollectionOfVirtualAccountTransactionView';
 export type { StandardResponseOfstring } from './models/StandardResponseOfstring';
 export type { StandardResponseOfTransferRecipientView } from './models/StandardResponseOfTransferRecipientView';
 export type { StandardResponseOfTransferRequestView } from './models/StandardResponseOfTransferRequestView';
@@ -75,6 +77,7 @@ export type { UpdateUserProfileModel } from './models/UpdateUserProfileModel';
 export type { UserView } from './models/UserView';
 export type { UserView2 } from './models/UserView2';
 export type { VirtualAccountStatus } from './models/VirtualAccountStatus';
+export type { VirtualAccountTransactionView } from './models/VirtualAccountTransactionView';
 export type { VirtualAccountView } from './models/VirtualAccountView';
 
 export { CalendarService } from './services/CalendarService';

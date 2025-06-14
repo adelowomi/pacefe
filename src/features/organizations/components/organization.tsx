@@ -19,13 +19,14 @@ import { useOrganizationMembers, useRemoveOrganizationMember, useUpdateMemberRol
 import AddMemberModal from './add-member-modal';
 import CreateOrganizationModal from './create-organization-modal';
 import RequestVirtualAccountModal from './request-virtual-account-modal';
+import VirtualAccount from './virtual-account';
 
 interface OrganizationPageProps {
   organizationId: string;
 }
 
 export default function OrganizationPage({ organizationId }: OrganizationPageProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'virtual-account' | 'settings'>('overview');
   const [showAddMember, setShowAddMember] = useState(false);
   const [showCreateOrganization, setShowCreateOrganization] = useState(false);
   const [showRequestVirtualAccount, setShowRequestVirtualAccount] = useState(false);
@@ -134,6 +135,7 @@ export default function OrganizationPage({ organizationId }: OrganizationPagePro
           {[
             { id: 'overview', label: 'Overview', icon: Building2 },
             { id: 'members', label: 'Members', icon: Users },
+            { id: 'virtual-account', label: 'Virtual Account', icon: CreditCard },
             { id: 'settings', label: 'Settings', icon: Edit },
           ].map((tab) => {
             const Icon = tab.icon;
@@ -372,11 +374,11 @@ export default function OrganizationPage({ organizationId }: OrganizationPagePro
                     Edit Organization
                   </button>
                   <button 
-                    onClick={() => setShowRequestVirtualAccount(true)}
+                    onClick={() => setActiveTab('virtual-account')}
                     className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
                   >
                     <CreditCard className="h-4 w-4 mr-2" />
-                    Request Virtual Account
+                    Virtual Account
                   </button>
                   <button 
                     onClick={() => setActiveTab('members')}
@@ -552,6 +554,13 @@ export default function OrganizationPage({ organizationId }: OrganizationPagePro
             </div>
           )}
         </div>
+      )}
+
+      {activeTab === 'virtual-account' && (
+        <VirtualAccount 
+          organizationId={organizationId}
+          organizationName={organization.name || ''}
+        />
       )}
 
       {activeTab === 'settings' && (

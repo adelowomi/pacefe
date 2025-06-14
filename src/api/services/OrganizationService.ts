@@ -5,6 +5,7 @@
 import type { OrganizationModel } from '../models/OrganizationModel';
 import type { StandardResponseOfOrganizationView } from '../models/StandardResponseOfOrganizationView';
 import type { StandardResponseOfPagedCollectionOfOrganizationView } from '../models/StandardResponseOfPagedCollectionOfOrganizationView';
+import type { StandardResponseOfPagedCollectionOfVirtualAccountTransactionView } from '../models/StandardResponseOfPagedCollectionOfVirtualAccountTransactionView';
 import type { StandardResponseOfVirtualAccountView } from '../models/StandardResponseOfVirtualAccountView';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
@@ -102,6 +103,69 @@ export class OrganizationService {
       url: '/api/Organization/{id}/virtual-account',
       path: {
         'id': id,
+      },
+      errors: {
+        400: `Bad Request`,
+        401: `Unauthorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+  /**
+   * @returns StandardResponseOfVirtualAccountView OK
+   * @throws ApiError
+   */
+  public getVirtualAccountAsync({
+    id,
+  }: {
+    id: string,
+  }): CancelablePromise<StandardResponseOfVirtualAccountView> {
+    return this.httpRequest.request({
+      method: 'GET',
+      url: '/api/Organization/{id}/virtual-account',
+      path: {
+        'id': id,
+      },
+      errors: {
+        400: `Bad Request`,
+        401: `Unauthorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+  /**
+   * @returns StandardResponseOfPagedCollectionOfVirtualAccountTransactionView OK
+   * @throws ApiError
+   */
+  public getVirtualAccountTransactionsAsync({
+    id,
+    pageNumber,
+    pageSize,
+    searchTerm,
+    sortBy,
+    sortOrder,
+  }: {
+    id: string,
+    pageNumber?: number,
+    pageSize?: number,
+    searchTerm?: string,
+    sortBy?: string,
+    sortOrder?: string,
+  }): CancelablePromise<StandardResponseOfPagedCollectionOfVirtualAccountTransactionView> {
+    return this.httpRequest.request({
+      method: 'GET',
+      url: '/api/Organization/{id}/virtual-account/transactions',
+      path: {
+        'id': id,
+      },
+      query: {
+        'PageNumber': pageNumber,
+        'PageSize': pageSize,
+        'SearchTerm': searchTerm,
+        'SortBy': sortBy,
+        'SortOrder': sortOrder,
       },
       errors: {
         400: `Bad Request`,

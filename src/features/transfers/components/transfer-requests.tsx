@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   ArrowUpRight, 
   Plus, 
@@ -12,15 +12,20 @@ import {
   MessageSquare,
   Eye,
   Check,
-  X
+  X,
+  CheckSquare,
+  Square
 } from 'lucide-react';
 import { useTransferRequests, useApproveTransferRequest, useRejectTransferRequest } from '../hooks/useTransfers';
 import CreateTransferModal from './create-transfer-modal';
 import ConfirmationModal from '../../../components/ui/confirmation-modal';
+import type { TransferRequestView } from '../../../api/models/TransferRequestView';
 
 interface TransferRequestsProps {
   organizationId: string;
 }
+
+type TabType = 'all' | 'pending' | 'approved' | 'rejected' | 'processed' | 'failed';
 
 export default function TransferRequests({ organizationId }: TransferRequestsProps) {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -29,12 +34,42 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [requestToApprove, setRequestToApprove] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<TabType>('all');
+  const [selectedRequests, setSelectedRequests] = useState<Set<string>>(new Set());
+  const [showBulkApproveModal, setShowBulkApproveModal] = useState(false);
 
   const { data: requestsData, isLoading } = useTransferRequests(organizationId);
   const approveRequestMutation = useApproveTransferRequest();
   const rejectRequestMutation = useRejectTransferRequest();
 
   const requests = requestsData?.data || [];
+
+  // Group requests by status
+  const groupedRequests = useMemo(() => {
+    const groups = {
+      all: requests,
+      pending: requests.filter(r => r.status?.toLowerCase() === 'pending'),
+      approved: requests.filter(r => r.status?.toLowerCase() === 'approved'),
+      rejected: requests.filter(r => r.status?.toLowerCase() === 'rejected'),
+      processed: requests.filter(r => r.status?.toLowerCase() === 'processed'),
+      failed: requests.filter(r => r.status?.toLowerCase() === 'failed'),
+    };
+    return groups;
+  }, [requests]);
+
+  const currentRequests = groupedRequests[activeTab];
+
+  // Calculate total amount for pending requests
+  const pendingTotalAmount = useMemo(() => {
+    return groupedRequests.pending.reduce((sum, r) => sum + (r.amount || 0), 0);
+  }, [groupedRequests.pending]);
+
+  // Calculate selected requests total amount
+  const selectedTotalAmount = useMemo(() => {
+    return groupedRequests.pending
+      .filter(r => r.id && selectedRequests.has(r.id))
+      .reduce((sum, r) => sum + (r.amount || 0), 0);
+  }, [groupedRequests.pending, selectedRequests]);
 
   const getStatusIcon = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -108,6 +143,65 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
     setShowRejectModal(true);
   };
 
+  // Bulk selection handlers
+  const toggleRequestSelection = (requestId: string) => {
+    const newSelected = new Set(selectedRequests);
+    if (newSelected.has(requestId)) {
+      newSelected.delete(requestId);
+    } else {
+      newSelected.add(requestId);
+    }
+    setSelectedRequests(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedRequests.size === groupedRequests.pending.length) {
+      setSelectedRequests(new Set());
+    } else {
+      const allPendingIds = new Set(
+        groupedRequests.pending.map(r => r.id).filter(Boolean) as string[]
+      );
+      setSelectedRequests(allPendingIds);
+    }
+  };
+
+  const handleBulkApprove = async () => {
+    const requestIds = Array.from(selectedRequests);
+    
+    try {
+      // Approve all selected requests
+      await Promise.all(
+        requestIds.map(id => approveRequestMutation.mutateAsync(id))
+      );
+      
+      setShowBulkApproveModal(false);
+      setSelectedRequests(new Set());
+    } catch (error) {
+      console.error('Failed to bulk approve requests:', error);
+    }
+  };
+
+  const getTabCount = (tab: TabType) => {
+    return groupedRequests[tab].length;
+  };
+
+  const getTabColor = (tab: TabType) => {
+    switch (tab) {
+      case 'pending':
+        return 'text-yellow-600 dark:text-yellow-400';
+      case 'approved':
+        return 'text-green-600 dark:text-green-400';
+      case 'rejected':
+        return 'text-red-600 dark:text-red-400';
+      case 'processed':
+        return 'text-blue-600 dark:text-blue-400';
+      case 'failed':
+        return 'text-red-600 dark:text-red-400';
+      default:
+        return 'text-muted-foreground';
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -135,7 +229,40 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
         </button>
       </div>
 
-      {/* Summary Stats */}
+      {/* Tabs */}
+      <div className="border-b border-border">
+        <nav className="-mb-px flex space-x-8">
+          {[
+            { key: 'all' as TabType, label: 'All Requests', icon: ArrowUpRight },
+            { key: 'pending' as TabType, label: 'Pending', icon: Clock },
+            { key: 'approved' as TabType, label: 'Approved', icon: CheckCircle },
+            { key: 'processed' as TabType, label: 'Processed', icon: CheckCircle },
+            { key: 'rejected' as TabType, label: 'Rejected', icon: XCircle },
+            { key: 'failed' as TabType, label: 'Failed', icon: AlertCircle },
+          ].map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => {
+                setActiveTab(key);
+                setSelectedRequests(new Set()); // Clear selections when switching tabs
+              }}
+              className={`${
+                activeTab === key
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+              } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
+            >
+              <Icon className="h-4 w-4" />
+              <span>{label}</span>
+              <span className={`inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none rounded-full ${getTabColor(key)} bg-current/10`}>
+                {getTabCount(key)}
+              </span>
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Summary Stats for Current Tab */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-lg shadow-sm border border-border p-4">
           <div className="flex items-center">
@@ -143,36 +270,10 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
               <ArrowUpRight className="h-6 w-6 text-primary" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-muted-foreground">Total Requests</p>
-              <p className="text-lg font-bold text-card-foreground">{requests.length}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-card rounded-lg shadow-sm border border-border p-4">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <Clock className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-muted-foreground">Pending</p>
-              <p className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
-                {requests.filter(r => r.status?.toLowerCase() === 'pending').length}
+              <p className="text-sm font-medium text-muted-foreground">
+                {activeTab === 'all' ? 'Total Requests' : `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Requests`}
               </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-card rounded-lg shadow-sm border border-border p-4">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-muted-foreground">Approved</p>
-              <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                {requests.filter(r => ['approved', 'processed'].includes(r.status?.toLowerCase() || '')).length}
-              </p>
+              <p className="text-lg font-bold text-card-foreground">{currentRequests.length}</p>
             </div>
           </div>
         </div>
@@ -185,15 +286,82 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
             <div className="ml-3">
               <p className="text-sm font-medium text-muted-foreground">Total Amount</p>
               <p className="text-lg font-bold text-purple-600 dark:text-purple-400">
-                ₦{requests.reduce((sum, r) => sum + (r.amount || 0), 0).toLocaleString('en-NG')}
+                ₦{currentRequests.reduce((sum, r) => sum + (r.amount || 0), 0).toLocaleString('en-NG')}
               </p>
             </div>
           </div>
         </div>
+
+        {activeTab === 'pending' && (
+          <>
+            <div className="bg-card rounded-lg shadow-sm border border-border p-4">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <CheckSquare className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-muted-foreground">Selected</p>
+                  <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{selectedRequests.size}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-card rounded-lg shadow-sm border border-border p-4">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <DollarSign className="h-6 w-6 text-green-600 dark:text-green-400" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-muted-foreground">Selected Amount</p>
+                  <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                    ₦{selectedTotalAmount.toLocaleString('en-NG')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
+      {/* Bulk Actions for Pending Tab */}
+      {activeTab === 'pending' && groupedRequests.pending.length > 0 && (
+        <div className="flex items-center justify-between bg-muted/50 rounded-lg p-4">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={toggleSelectAll}
+              className="flex items-center space-x-2 text-sm font-medium text-foreground hover:text-primary"
+            >
+              {selectedRequests.size === groupedRequests.pending.length ? (
+                <CheckSquare className="h-4 w-4" />
+              ) : (
+                <Square className="h-4 w-4" />
+              )}
+              <span>
+                {selectedRequests.size === groupedRequests.pending.length ? 'Deselect All' : 'Select All'}
+              </span>
+            </button>
+            {selectedRequests.size > 0 && (
+              <span className="text-sm text-muted-foreground">
+                {selectedRequests.size} of {groupedRequests.pending.length} selected
+              </span>
+            )}
+          </div>
+          
+          {selectedRequests.size > 0 && (
+            <button
+              onClick={() => setShowBulkApproveModal(true)}
+              disabled={approveRequestMutation.isPending}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Check className="h-4 w-4 mr-2" />
+              Approve Selected ({selectedRequests.size})
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Requests List */}
-      {requests.length === 0 ? (
+      {currentRequests.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-lg border border-border">
           <ArrowUpRight className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-2 text-sm font-medium text-card-foreground">No transfer requests</h3>
@@ -213,10 +381,26 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
       ) : (
         <div className="bg-card shadow overflow-hidden sm:rounded-md border border-border">
           <ul className="divide-y divide-border">
-            {requests.map((request) => (
+            {currentRequests.map((request) => (
               <li key={request.id} className="px-6 py-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4 flex-1">
+                    {/* Selection checkbox for pending requests */}
+                    {activeTab === 'pending' && request.id && (
+                      <div className="flex-shrink-0">
+                        <button
+                          onClick={() => toggleRequestSelection(request.id!)}
+                          className="text-muted-foreground hover:text-primary"
+                        >
+                          {selectedRequests.has(request.id) ? (
+                            <CheckSquare className="h-5 w-5 text-primary" />
+                          ) : (
+                            <Square className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    
                     <div className="flex-shrink-0">
                       <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center">
                         <ArrowUpRight className="h-5 w-5 text-primary" />
@@ -276,7 +460,29 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
                   </div>
                   
                   {/* Action Buttons */}
-                  {request.status?.toLowerCase() === 'pending' && (
+                  {request.status?.toLowerCase() === 'pending' && activeTab !== 'pending' && (
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => request.id && openApproveModal(request.id)}
+                        disabled={approveRequestMutation.isPending}
+                        className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 p-1 disabled:opacity-50"
+                        title="Approve request"
+                      >
+                        <Check className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => request.id && openRejectModal(request.id)}
+                        disabled={rejectRequestMutation.isPending}
+                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 disabled:opacity-50"
+                        title="Reject request"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* Individual action buttons for pending tab */}
+                  {request.status?.toLowerCase() === 'pending' && activeTab === 'pending' && (
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => request.id && openApproveModal(request.id)}
@@ -379,6 +585,19 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
         title="Approve Transfer Request"
         message="Are you sure you want to approve this transfer request? This action will process the transfer and cannot be undone."
         confirmText="Approve Request"
+        cancelText="Cancel"
+        type="success"
+        isLoading={approveRequestMutation.isPending}
+      />
+
+      {/* Bulk Approve Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showBulkApproveModal}
+        onClose={() => setShowBulkApproveModal(false)}
+        onConfirm={handleBulkApprove}
+        title="Bulk Approve Transfer Requests"
+        message={`Are you sure you want to approve ${selectedRequests.size} transfer requests with a total amount of ₦${selectedTotalAmount.toLocaleString('en-NG')}? This action will process all selected transfers and cannot be undone.`}
+        confirmText={`Approve ${selectedRequests.size} Requests`}
         cancelText="Cancel"
         type="success"
         isLoading={approveRequestMutation.isPending}

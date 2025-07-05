@@ -14,10 +14,12 @@ import {
   Check,
   X,
   CheckSquare,
-  Square
+  Square,
+  Receipt
 } from 'lucide-react';
 import { useTransferRequests, useApproveTransferRequest, useRejectTransferRequest } from '../hooks/useTransfers';
 import CreateTransferModal from './create-transfer-modal';
+import TransferReceiptModal from './transfer-receipt-modal';
 import ConfirmationModal from '../../../components/ui/confirmation-modal';
 import type { TransferRequestView } from '../../../api/models/TransferRequestView';
 
@@ -37,6 +39,8 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [selectedRequests, setSelectedRequests] = useState<Set<string>>(new Set());
   const [showBulkApproveModal, setShowBulkApproveModal] = useState(false);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [selectedTransferForReceipt, setSelectedTransferForReceipt] = useState<TransferRequestView | null>(null);
 
   const { data: requestsData, isLoading } = useTransferRequests(organizationId);
   const approveRequestMutation = useApproveTransferRequest();
@@ -141,6 +145,22 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
   const openRejectModal = (requestId: string) => {
     setSelectedRequest(requestId);
     setShowRejectModal(true);
+  };
+
+  const openReceiptModal = (transfer: TransferRequestView) => {
+    setSelectedTransferForReceipt(transfer);
+    setShowReceiptModal(true);
+  };
+
+  const closeReceiptModal = () => {
+    setShowReceiptModal(false);
+    setSelectedTransferForReceipt(null);
+  };
+
+  // Check if transfer is eligible for receipt generation
+  const canGenerateReceipt = (status?: string) => {
+    const eligibleStatuses = ['approved', 'processed'];
+    return eligibleStatuses.includes(status?.toLowerCase() || '');
   };
 
   // Bulk selection handlers
@@ -460,48 +480,40 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
                   </div>
                   
                   {/* Action Buttons */}
-                  {request.status?.toLowerCase() === 'pending' && activeTab !== 'pending' && (
-                    <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2">
+                    {/* Receipt button for successful transfers */}
+                    {canGenerateReceipt(request.status) && (
                       <button
-                        onClick={() => request.id && openApproveModal(request.id)}
-                        disabled={approveRequestMutation.isPending}
-                        className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 p-1 disabled:opacity-50"
-                        title="Approve request"
+                        onClick={() => openReceiptModal(request)}
+                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 p-1"
+                        title="Generate receipt"
                       >
-                        <Check className="h-4 w-4" />
+                        <Receipt className="h-4 w-4" />
                       </button>
-                      <button
-                        onClick={() => request.id && openRejectModal(request.id)}
-                        disabled={rejectRequestMutation.isPending}
-                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 disabled:opacity-50"
-                        title="Reject request"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  )}
-                  
-                  {/* Individual action buttons for pending tab */}
-                  {request.status?.toLowerCase() === 'pending' && activeTab === 'pending' && (
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => request.id && openApproveModal(request.id)}
-                        disabled={approveRequestMutation.isPending}
-                        className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 p-1 disabled:opacity-50"
-                        title="Approve request"
-                      >
-                        <Check className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => request.id && openRejectModal(request.id)}
-                        disabled={rejectRequestMutation.isPending}
-                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 disabled:opacity-50"
-                        title="Reject request"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  )}
+                    )}
+                    
+                    {/* Pending request actions */}
+                    {request.status?.toLowerCase() === 'pending' && (
+                      <>
+                        <button
+                          onClick={() => request.id && openApproveModal(request.id)}
+                          disabled={approveRequestMutation.isPending}
+                          className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 p-1 disabled:opacity-50"
+                          title="Approve request"
+                        >
+                          <Check className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => request.id && openRejectModal(request.id)}
+                          disabled={rejectRequestMutation.isPending}
+                          className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 disabled:opacity-50"
+                          title="Reject request"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </li>
             ))}
@@ -602,6 +614,16 @@ export default function TransferRequests({ organizationId }: TransferRequestsPro
         type="success"
         isLoading={approveRequestMutation.isPending}
       />
+
+      {/* Transfer Receipt Modal */}
+      {selectedTransferForReceipt && (
+        <TransferReceiptModal
+          isOpen={showReceiptModal}
+          onClose={closeReceiptModal}
+          transfer={selectedTransferForReceipt}
+          organizationName="Your Organization" // TODO: Get actual organization name
+        />
+      )}
     </div>
   );
 }

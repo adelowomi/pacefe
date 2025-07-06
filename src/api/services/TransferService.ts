@@ -8,6 +8,7 @@ import type { StandardResponseOfJsonDocument } from '../models/StandardResponseO
 import type { StandardResponseOfListOfBankView } from '../models/StandardResponseOfListOfBankView';
 import type { StandardResponseOfListOfTransferRecipientView } from '../models/StandardResponseOfListOfTransferRecipientView';
 import type { StandardResponseOfListOfTransferRequestView } from '../models/StandardResponseOfListOfTransferRequestView';
+import type { StandardResponseOfPagedCollectionOfTransferRequestView } from '../models/StandardResponseOfPagedCollectionOfTransferRequestView';
 import type { StandardResponseOfTransferRecipientView } from '../models/StandardResponseOfTransferRecipientView';
 import type { StandardResponseOfTransferRequestView } from '../models/StandardResponseOfTransferRequestView';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -181,6 +182,64 @@ export class TransferService {
       errors: {
         400: `Bad Request`,
         401: `Unauthorized`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+  /**
+   * @returns StandardResponseOfPagedCollectionOfTransferRequestView OK
+   * @throws ApiError
+   */
+  public getApiTransferV2RequestOrganization({
+    organizationId,
+    pageNumber = 1,
+    pageSize = 10,
+    statuses = null,
+    dateFrom = null,
+    dateTo = null,
+    minAmount = null,
+    maxAmount = null,
+    requesterId = null,
+    searchTerm = null,
+    sortBy = null,
+    sortOrder = null,
+  }: {
+    organizationId: string,
+    pageNumber?: number,
+    pageSize?: number,
+    statuses?: string,
+    dateFrom?: string,
+    dateTo?: string,
+    minAmount?: number,
+    maxAmount?: number,
+    requesterId?: string,
+    searchTerm?: string,
+    sortBy?: string,
+    sortOrder?: string,
+  }): CancelablePromise<StandardResponseOfPagedCollectionOfTransferRequestView> {
+    return this.httpRequest.request({
+      method: 'GET',
+      url: '/api/Transfer/v2/request/organization/{organizationId}',
+      path: {
+        'organizationId': organizationId,
+      },
+      query: {
+        'pageNumber': pageNumber,
+        'pageSize': pageSize,
+        'statuses': statuses,
+        'dateFrom': dateFrom,
+        'dateTo': dateTo,
+        'minAmount': minAmount,
+        'maxAmount': maxAmount,
+        'requesterId': requesterId,
+        'searchTerm': searchTerm,
+        'sortBy': sortBy,
+        'sortOrder': sortOrder,
+      },
+      errors: {
+        400: `Bad Request`,
+        401: `Unauthorized`,
+        404: `Not Found`,
         500: `Internal Server Error`,
       },
     });

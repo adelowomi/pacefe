@@ -57,6 +57,7 @@ export default function TransferRequestsEnhanced({ organizationId }: TransferReq
   const [selectedRequests, setSelectedRequests] = useState<Set<string>>(new Set());
   const [showFilters, setShowFilters] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [sortField, setSortField] = useState<SortField>('dateCreated');
@@ -68,21 +69,26 @@ export default function TransferRequestsEnhanced({ organizationId }: TransferReq
   const [minAmount, setMinAmount] = useState<number | undefined>();
   const [maxAmount, setMaxAmount] = useState<number | undefined>();
   const [selectedRequesterId, setSelectedRequesterId] = useState('');
+  const [appliedDateFrom, setAppliedDateFrom] = useState('');
+  const [appliedDateTo, setAppliedDateTo] = useState('');
+  const [appliedMinAmount, setAppliedMinAmount] = useState<number | undefined>();
+  const [appliedMaxAmount, setAppliedMaxAmount] = useState<number | undefined>();
+  const [appliedRequesterId, setAppliedRequesterId] = useState('');
 
   // Build filters object
   const filters: TransferRequestFilters = useMemo(() => ({
     pageNumber: currentPage,
     pageSize,
     statuses: activeTab === 'all' ? undefined : activeTab,
-    searchTerm: searchTerm.trim() || undefined,
-    dateFrom: dateFrom || undefined,
-    dateTo: dateTo || undefined,
-    minAmount,
-    maxAmount,
-    requesterId: selectedRequesterId || undefined,
+    searchTerm: appliedSearchTerm.trim() || undefined,
+    dateFrom: appliedDateFrom || undefined,
+    dateTo: appliedDateTo || undefined,
+    minAmount: appliedMinAmount,
+    maxAmount: appliedMaxAmount,
+    requesterId: appliedRequesterId || undefined,
     sortBy: sortField,
     sortOrder,
-  }), [currentPage, pageSize, activeTab, searchTerm, dateFrom, dateTo, minAmount, maxAmount, selectedRequesterId, sortField, sortOrder]);
+  }), [currentPage, pageSize, activeTab, appliedSearchTerm, appliedDateFrom, appliedDateTo, appliedMinAmount, appliedMaxAmount, appliedRequesterId, sortField, sortOrder]);
 
   const { data: requestsResponse, isLoading, isFetching, refetch } = useTransferRequests(organizationId, filters);
   const approveRequestMutation = useApproveTransferRequest();
@@ -152,10 +158,21 @@ export default function TransferRequestsEnhanced({ organizationId }: TransferReq
     setSelectedRequests(new Set());
   }, []);
 
-  const handleSearch = useCallback((term: string) => {
-    setSearchTerm(term);
+  const applyFilters = useCallback(() => {
+    setAppliedSearchTerm(searchTerm);
+    setAppliedDateFrom(dateFrom);
+    setAppliedDateTo(dateTo);
+    setAppliedMinAmount(minAmount);
+    setAppliedMaxAmount(maxAmount);
+    setAppliedRequesterId(selectedRequesterId);
     setCurrentPage(1);
-  }, []);
+  }, [searchTerm, dateFrom, dateTo, minAmount, maxAmount, selectedRequesterId]);
+
+  const handleSearchKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      applyFilters();
+    }
+  }, [applyFilters]);
 
   const handleSort = useCallback((field: SortField) => {
     if (sortField === field) {
@@ -179,6 +196,12 @@ export default function TransferRequestsEnhanced({ organizationId }: TransferReq
     setMinAmount(undefined);
     setMaxAmount(undefined);
     setSelectedRequesterId('');
+    setAppliedSearchTerm('');
+    setAppliedDateFrom('');
+    setAppliedDateTo('');
+    setAppliedMinAmount(undefined);
+    setAppliedMaxAmount(undefined);
+    setAppliedRequesterId('');
     setCurrentPage(1);
   }, []);
 
@@ -327,12 +350,20 @@ export default function TransferRequestsEnhanced({ organizationId }: TransferReq
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search by recipient name, reference, or reason..."
+              placeholder="Search by recipient name, reference, or reason... (Press Enter to search)"
               value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={handleSearchKeyPress}
               className="w-full pl-10 pr-4 py-2 border border-input rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-ring focus:border-transparent placeholder:text-muted-foreground"
             />
           </div>
+          <button
+            onClick={applyFilters}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90"
+          >
+            <Search className="h-4 w-4 mr-2" />
+            Search
+          </button>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`inline-flex items-center px-3 py-2 border border-input rounded-md shadow-sm text-sm font-medium ${
@@ -387,7 +418,14 @@ export default function TransferRequestsEnhanced({ organizationId }: TransferReq
                 />
               </div>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+              <button
+                onClick={applyFilters}
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90"
+              >
+                <Filter className="h-4 w-4 mr-2" />
+                Apply Filters
+              </button>
               <button
                 onClick={clearFilters}
                 className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -525,13 +563,13 @@ export default function TransferRequestsEnhanced({ organizationId }: TransferReq
           <ArrowUpRight className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-2 text-sm font-medium text-card-foreground">No transfer requests found</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            {searchTerm || dateFrom || dateTo || minAmount || maxAmount ? 
+            {appliedSearchTerm || appliedDateFrom || appliedDateTo || appliedMinAmount || appliedMaxAmount ? 
               'Try adjusting your search criteria or filters.' :
               'Get started by creating your first transfer request.'
             }
           </p>
           <div className="mt-6 space-x-3">
-            {(searchTerm || dateFrom || dateTo || minAmount || maxAmount) && (
+            {(appliedSearchTerm || appliedDateFrom || appliedDateTo || appliedMinAmount || appliedMaxAmount) && (
               <button
                 onClick={clearFilters}
                 className="inline-flex items-center px-4 py-2 border border-input rounded-md shadow-sm text-sm font-medium text-muted-foreground bg-background hover:bg-accent hover:text-accent-foreground"

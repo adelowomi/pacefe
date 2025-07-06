@@ -39,6 +39,7 @@ export type { OrganizationModel } from './models/OrganizationModel';
 export type { OrganizationView } from './models/OrganizationView';
 export type { OrganizationView2 } from './models/OrganizationView2';
 export type { PagedCollectionOfOrganizationView } from './models/PagedCollectionOfOrganizationView';
+export type { PagedCollectionOfTransferRequestView } from './models/PagedCollectionOfTransferRequestView';
 export type { PagedCollectionOfVirtualAccountTransactionView } from './models/PagedCollectionOfVirtualAccountTransactionView';
 export type { PaginationLinks } from './models/PaginationLinks';
 export type { PaginationMetadata } from './models/PaginationMetadata';
@@ -61,6 +62,7 @@ export type { StandardResponseOfListOfTransferRequestView } from './models/Stand
 export type { StandardResponseOfOrganizationMemberView } from './models/StandardResponseOfOrganizationMemberView';
 export type { StandardResponseOfOrganizationView } from './models/StandardResponseOfOrganizationView';
 export type { StandardResponseOfPagedCollectionOfOrganizationView } from './models/StandardResponseOfPagedCollectionOfOrganizationView';
+export type { StandardResponseOfPagedCollectionOfTransferRequestView } from './models/StandardResponseOfPagedCollectionOfTransferRequestView';
 export type { StandardResponseOfPagedCollectionOfVirtualAccountTransactionView } from './models/StandardResponseOfPagedCollectionOfVirtualAccountTransactionView';
 export type { StandardResponseOfstring } from './models/StandardResponseOfstring';
 export type { StandardResponseOfTransferRecipientView } from './models/StandardResponseOfTransferRecipientView';
